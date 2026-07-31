@@ -432,6 +432,15 @@ function toggleSB(){
   var pw=document.getElementById('pnad-year-wrap');
   if(pw) pw.style.display=isPnad?'block':'none';
   var isMun=S.view==='municipio';
+  // Ajustar ano mínimo na aba municipal (dados completos a partir de 2015)
+  var fAno=document.getElementById('f-ano');
+  if(fAno){
+    Array.from(fAno.options).forEach(function(opt){
+      opt.disabled=isMun&&+opt.value<2015;
+      opt.style.display=isMun&&+opt.value<2015?'none':'';
+    });
+    if(isMun&&S.ano<2015){S.ano=2015;fAno.value=2015;}
+  }
   ['f-rg','f-uf','f-tip','sg-sd','sg-su','sg-sm','sg-az','sg-ff','sg-mt','sg-aa','sg-ro','sg-ci',
    'f-ano','f-ini','f-fim','mun-wrap'].forEach(function(id){
     var el=document.getElementById(id);
@@ -1369,6 +1378,9 @@ function _renderMunicipio(main){
   for(var k in detFull) det[k]=detFull[k];
   
   var serieMun=MDET_SERIE[String(mSel.i)]||{};
+  if(Object.keys(serieMun).length===0) console.warn('MDET_SERIE vazio para ibge='+mSel.i);
+  else { var anosDisp2=Object.keys(serieMun[Object.keys(serieMun)[0]]||{});
+    console.log('MDET_SERIE ok: '+Object.keys(serieMun).length+' inds, anos='+anosDisp2.join(',')+', S.ano='+S.ano); }
   var anoStr=String(S.ano);
   for(var ind in serieMun){
     var vAno=serieMun[ind][anoStr];
@@ -1421,9 +1433,9 @@ function _renderMunicipio(main){
     +'<div class="card"><h2>Objetivos da PNDR</h2><div style="height:220px"><canvas id="cmro"></canvas></div></div>'
     +'</div>'
     +(Object.keys(serieMun).length?'<div class="card"><h2>Evolução Histórica dos Compostos · '+mSel.n+'</h2><div class="desc">Índices compostos 2013–'+ANO_MAX+' · selecione o ano de análise no filtro lateral</div><div style="height:260px"><canvas id="cmhist"></canvas></div></div>':'')
-    +'<div class="card"><h2>Eixos Estratégicos · 2024</h2>'
+    +'<div class="card"><h2>Eixos Estratégicos · '+S.ano+'</h2>'
     +'<div class="mdet-grid">'+EIXOS_DEF.map(mkCard).join('')+'</div></div>'
-    +'<div class="card"><h2>Objetivos da PNDR · 2024</h2>'
+    +'<div class="card"><h2>Objetivos da PNDR · '+S.ano+'</h2>'
     +'<div class="mdet-grid mdet-grid-obj">'+OBJ_DEF.map(mkCard).join('')+'</div></div>';
 
   
