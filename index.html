@@ -840,6 +840,40 @@ function dlMunicipalXLSX(){
   downloadXLSX('PNDR_Municipal_2024.xlsx',rows,'Municípios');
 }
 
+function dlMunicipioSelecionado(fmt){
+  if(!S.munSel) return;
+  var mSel=MUNS.find(function(m){return m.i===S.munSel;});
+  if(!mSel) return;
+  var serieMun=MDET_SERIE[String(mSel.i)]||{};
+  var detFull=MDET[String(mSel.i)]||{};
+  // Coletar todos os indicadores disponíveis
+  var inds={};
+  for(var k in detFull) inds[k]=1;
+  for(var k2 in serieMun) inds[k2]=1;
+  var indIds=Object.keys(inds).map(Number).sort(function(a,b){return a-b;});
+  var anos=Object.keys(serieMun[String(indIds[0])]||{}).map(Number).sort(function(a,b){return a-b;});
+  if(!anos.length) anos=[ANO_MAX];
+  // Cabeçalho
+  var header=['Município','UF','Região','Tipologia','Código IBGE','Indicador','ID'].concat(anos);
+  var rows=[header];
+  indIds.forEach(function(id){
+    var m2=META[id]||{};
+    var nm=(m2.nm||'Ind '+id).trim();
+    var serie=serieMun[String(id)]||{};
+    var linha=[mSel.n,mSel.u,mSel.rg,mSel.tp,mSel.i,nm,id].concat(
+      anos.map(function(a){
+        var v=serie[String(a)];
+        if(v==null) v=a===ANO_MAX?(detFull[String(id)]||null):null;
+        return v!=null?v:'';
+      })
+    );
+    rows.push(linha);
+  });
+  var nm2=mSel.n.replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
+  if(fmt==='xlsx') downloadXLSX('PNDR_'+nm2+'.xlsx',rows,mSel.n.substring(0,31));
+  else downloadCSV('PNDR_'+nm2+'.csv',rows);
+}
+
 
 function dlComparativo(){
   var compostos = COMP_EIXOS.concat(COMP_OBJ);
@@ -1640,4 +1674,4 @@ carregarDados();
 
 </script>
 </body>
-</html>
+</html\'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">\'\n    +\'<button onclick="S.munSel=null;render()" style="border:none;background:none;color:var(--pr);cursor:pointer;font-size:13px;padding:0">← Voltar</button>\'\n    +btnDL(\'Dados\',\'dlMunicipioSelecionado(\\\"csv\\\")\',\'dlMunicipioSelecionado(\\\"xlsx\\\")\')+\'</div>\'\n    >
