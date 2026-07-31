@@ -1473,21 +1473,22 @@ function _renderMunicipio(main){
     +'<div class="mdet-grid mdet-grid-obj">'+OBJ_DEF.map(mkCard).join('')+'</div></div>';
 
   
-  // Inserir botões de download no cabeçalho do detalhe
-  var divVoltar=main.querySelector('div[style*="space-between"]')||main.firstElementChild;
-  if(divVoltar&&!divVoltar.querySelector('.btn-dl')){
-    var dlDiv=document.createElement('div');
-    dlDiv.style.cssText='display:flex;gap:6px';
-    var b1=document.createElement('button');
-    b1.className='btn-dl';b1.textContent='⬇ CSV';
-    b1.onclick=function(){dlMunicipioSelecionado('csv');};
-    var b2=document.createElement('button');
-    b2.className='btn-dl';b2.textContent='⬇ XLSX';
-    b2.onclick=function(){dlMunicipioSelecionado('xlsx');};
-    dlDiv.appendChild(b1);dlDiv.appendChild(b2);
-    divVoltar.appendChild(dlDiv);
-    divVoltar.style.justifyContent='space-between';
-  }
+  // Botões de download no cabeçalho
+  (function(){
+    var hdr=main.firstElementChild;
+    if(!hdr) return;
+    hdr.style.justifyContent='space-between';
+    var wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;gap:6px;flex-shrink:0';
+    ['CSV','XLSX'].forEach(function(fmt){
+      var btn=document.createElement('button');
+      btn.className='btn-dl';
+      btn.textContent='⬇ '+fmt;
+      btn.onclick=(function(f){return function(){dlMunicipioSelecionado(f.toLowerCase());};})(fmt);
+      wrap.appendChild(btn);
+    });
+    hdr.appendChild(wrap);
+  })();
 
   dc('cmr');
   var rNms=EIXOS_DEF.map(function(e){return e.gnm.split('–')[0].trim();});
@@ -1690,4 +1691,4 @@ carregarDados();
 
 </script>
 </body>
-</html\'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">\'\n    +\'<button onclick="S.munSel=null;render()" style="border:none;background:none;color:var(--pr);cursor:pointer;font-size:13px;padding:0">← Voltar</button>\'\n    +btnDL(\'Dados\',\'dlMunicipioSelecionado(\\\"csv\\\")\',\'dlMunicipioSelecionado(\\\"xlsx\\\")\')+\'</div>\'\n    >
+</html>
