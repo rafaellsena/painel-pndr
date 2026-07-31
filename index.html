@@ -1459,6 +1459,7 @@ function _renderMunicipio(main){
   main.innerHTML=
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
     +'<button onclick="S.munSel=null;render()" style="border:none;background:none;color:var(--pr);cursor:pointer;font-size:13px;padding:0">← Voltar</button>'
+    +'<div style="display:flex;gap:6px"><button class="btn-dl" onclick="dlMunicipioSelecionado(\'csv\')">⬇ CSV</button><button class="btn-dl" onclick="dlMunicipioSelecionado(\'xlsx\')">⬇ XLSX</button></div>'
     +'</div>'
     +'<div class="tb"><h1>'+mSel.n+' <span style="font-weight:400;font-size:13px;color:var(--soft)">('+mSel.u+')</span></h1>'
     +'<div class="sub">'+mSel.rg+' · '+mSel.tp+(abrang.length?' · '+abrang.join(', '):'')+'</div></div>'
