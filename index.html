@@ -1459,7 +1459,6 @@ function _renderMunicipio(main){
   main.innerHTML=
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
     +'<button onclick="S.munSel=null;render()" style="border:none;background:none;color:var(--pr);cursor:pointer;font-size:13px;padding:0">← Voltar</button>'
-    +'<div style="display:flex;gap:6px"><button class="btn-dl" onclick="dlMunicipioSelecionado(\'csv\')">⬇ CSV</button><button class="btn-dl" onclick="dlMunicipioSelecionado(\'xlsx\')">⬇ XLSX</button></div>'
     +'</div>'
     +'<div class="tb"><h1>'+mSel.n+' <span style="font-weight:400;font-size:13px;color:var(--soft)">('+mSel.u+')</span></h1>'
     +'<div class="sub">'+mSel.rg+' · '+mSel.tp+(abrang.length?' · '+abrang.join(', '):'')+'</div></div>'
@@ -1474,6 +1473,22 @@ function _renderMunicipio(main){
     +'<div class="mdet-grid mdet-grid-obj">'+OBJ_DEF.map(mkCard).join('')+'</div></div>';
 
   
+  // Inserir botões de download no cabeçalho do detalhe
+  var divVoltar=main.querySelector('div[style*="space-between"]')||main.firstElementChild;
+  if(divVoltar&&!divVoltar.querySelector('.btn-dl')){
+    var dlDiv=document.createElement('div');
+    dlDiv.style.cssText='display:flex;gap:6px';
+    var b1=document.createElement('button');
+    b1.className='btn-dl';b1.textContent='⬇ CSV';
+    b1.onclick=function(){dlMunicipioSelecionado('csv');};
+    var b2=document.createElement('button');
+    b2.className='btn-dl';b2.textContent='⬇ XLSX';
+    b2.onclick=function(){dlMunicipioSelecionado('xlsx');};
+    dlDiv.appendChild(b1);dlDiv.appendChild(b2);
+    divVoltar.appendChild(dlDiv);
+    divVoltar.style.justifyContent='space-between';
+  }
+
   dc('cmr');
   var rNms=EIXOS_DEF.map(function(e){return e.gnm.split('–')[0].trim();});
   charts['cmr']=new Chart(document.getElementById('cmr'),{type:'radar',data:{labels:rNms,datasets:[{
